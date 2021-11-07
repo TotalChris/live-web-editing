@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'https://unpkg.com/lit@latest?module';
+import { LinkedList } from './LinkedList.js';
 export default class LiveBox extends LitElement {
     constructor(){
         super();
@@ -8,8 +9,12 @@ export default class LiveBox extends LitElement {
     }
     firstUpdated() {
         this.t = {type: null, p1: null, p2: null, content: null};
+        this.hist = new LinkedList();
         this.renderRoot.querySelector('#mainbox').addEventListener('beforeinput', (e) => {
             this.x = e.target.selectionStart;// x is cursor position before op
+            if(e.inputType == "insertLineBreak"){
+                console.log(this.hist.traverse())
+            }
         })
         this.renderRoot.querySelector('#mainbox').addEventListener('input', (e) => {
             this.y = e.target.selectionStart;// y is cursor position after op
@@ -27,11 +32,10 @@ export default class LiveBox extends LitElement {
                     break;
             }
             //input proof separate here
-            console.log(this.t) //the created packet
+            this.hist.append(this.t);
             document.querySelector('#copy').innerHTML = this.place(document.querySelector('#copy').innerHTML, (this.t.type == "add" ? this.t.content : ""), this.t.p1, (this.t.type == "sub" ? this.t.p2 : null));
-
+            
         });
-    
     }
     static get styles(){
         return css`
