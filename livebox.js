@@ -7,6 +7,12 @@ export default class LiveBox extends LitElement {
     place(str, instr, st, nd){
         return str.slice(0, st) + instr + str.slice(nd || st);
     }
+    get value() {
+        return this.renderRoot.querySelector('#mainbox').value;
+    }
+    set value(newValue){
+        this.renderRoot.querySelector('#mainbox').value = newValue;
+    }
     firstUpdated() {
         this.t = {type: null, p1: null, p2: null, content: null};
         this.hist = new LinkedList();
@@ -33,7 +39,7 @@ export default class LiveBox extends LitElement {
             }
             //input proof separate here
             this.hist.append(this.t);
-            document.querySelector('#copy').innerHTML = this.place(document.querySelector('#copy').innerHTML, (this.t.type == "add" ? this.t.content : ""), this.t.p1, (this.t.type == "sub" ? this.t.p2 : null));
+            //document.querySelector('#copy').innerHTML = this.place(document.querySelector('#copy').innerHTML, (this.t.type == "add" ? this.t.content : ""), this.t.p1, (this.t.type == "sub" ? this.t.p2 : null));
             
         });
     }
@@ -52,6 +58,8 @@ export default class LiveBox extends LitElement {
             border-radius: 15px;
             height: 50px;
             width: 450px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
         `
     }
