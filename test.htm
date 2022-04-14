@@ -29,6 +29,11 @@
         button:active{
             background-color: #999;
         }
+        #steeringwheel{
+            width: 450px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -36,21 +41,41 @@
     <live-box id="myLiveBox"></live-box>
     <button id="playButton">Play</button>
     <br>
-    <p id="copy"></p>
+    <input type="range" id="steeringwheel">
     <script src="livebox.js" type="module"></script>
     <script>
+        window.onload = () => {
+            this.wheel = document.querySelector("#steeringwheel");
+            this.box = document.querySelector('#myLiveBox');
+            this.wheel.min = -1;
+            this.wheel.max = -1;
+            this.wheel.value = -1;
+            this.histArray;
+            this.lastIndex;
+        }
+        
+
         function place(str, instr, st, nd){
             return str.slice(0, st) + instr + str.slice(nd || st);
         }
         document.querySelector("#playButton").addEventListener('click', () => {
-            this.box = document.querySelector('#myLiveBox');
             this.box.value = "";
-            this.histArray = document.querySelector('#myLiveBox').hist.traverse();
-            histArray.forEach(async (entry, i) => {
-                await setTimeout(() => {
-                    this.box.value = this.box.value.slice(0, entry.p1) + (entry.type == "add" ? entry.content : "") + this.box.value.slice((entry.type == "sub" ? entry.p2 : null) || entry.p1);
-                }, 100*i)
-            });
+            this.histArray = this.box.hist.traverse();
+            this.wheel.max = this.histArray.length - 1;
+            this.wheel.value = -1;
+            this.lastIndex = -1;
+        })
+        document.querySelector("#steeringwheel").addEventListener("input", (v) => {
+            i = parseFloat(v.target.value)
+            dir = (this.lastIndex < i? "fwd" : "bck" )
+            for(let p = lastIndex; p != i;p = p + (dir == "bck" ? -1 : 1)){
+                let entry = this.histArray[p + (dir == "bck" ? 0 : 1)]
+                console.log(p, i, this.histArray)
+                ttype = (((entry.type == "add" && dir == "fwd")||(entry.type == "sub" && dir == "bck")) ? "add" : "") + (((entry.type == "sub" && dir == "fwd")||(entry.type == "add" && dir == "bck")) ? "sub" : "") 
+                this.box.value = this.box.value.slice(0, entry.p1) + (ttype == "add" ? entry.content : "") + this.box.value.slice((ttype == "sub" ? entry.p2 : null) || entry.p1);
+            }
+            console.log('complet')
+            this.lastIndex = i;
         })
     </script>
 </body>
