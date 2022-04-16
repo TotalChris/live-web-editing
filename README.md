@@ -2,7 +2,6 @@
 A scratch project where I'm testing text editing mechanisms focused on sending small packets between clients to enable low-latency collaborative editing.
 
 ## Description
----
 The current module under test.htm uses a Lit-based Web Component that captures and stores it's per-character input, and produces a progress bar that can be used to rewind its input, including any mistakes or deletions. This is a micro-level implementation of a concept used in Google Wave to rewind large conversation threads to earlier dates and understand what's happeneing.
 
 ![A moving demo of the textbox and its rewind bar](https://raw.githubusercontent.com/TotalChris/Live-Web-Editing/main/demo.gif)
