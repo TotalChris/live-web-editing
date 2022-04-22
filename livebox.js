@@ -1,20 +1,20 @@
 import { LitElement, html, css } from 'https://unpkg.com/lit@latest?module';
 import { LinkedList } from './LinkedList.js';
 export default class LiveBox extends LitElement {
-    constructor(){
+    constructor() {
         super();
     }
-    place(str, instr, st, nd){
+    place(str, instr, st, nd) {
         return str.slice(0, st) + instr + str.slice(nd || st);
     }
     get value() {
         return this.renderRoot.querySelector('#mainbox').value;
     }
-    set value(newValue){
+    set value(newValue) {
         this.renderRoot.querySelector('#mainbox').value = newValue;
     }
     firstUpdated() {
-        this.t = {type: null, p1: null, p2: null, content: null};
+        this.t = { type: null, p1: null, p2: null, content: null };
         this.hist = new LinkedList();
         this.wheel = this.renderRoot.querySelector("#steeringwheel");
         this.wheel.min = -1;
@@ -25,24 +25,25 @@ export default class LiveBox extends LitElement {
         this.lastIndex;
         this.renderRoot.querySelector('#mainbox').addEventListener('beforeinput', (e) => {
             this.x = e.target.selectionStart;// x is cursor position before op
-            if(e.inputType == "insertLineBreak"){
+            if (e.inputType == "insertLineBreak") {
                 console.log(this.hist.traverse())
             }
         })
         this.renderRoot.querySelector('#mainbox').addEventListener('input', (e) => {
-            this.wheel.disabled = false;       
+            this.wheel.disabled = false;
             this.y = e.target.selectionStart;// y is cursor position after op
             this.o = this.n;
             this.n = e.target.value; //TODO: Chunk of string
-            switch(e.inputType){
+            console.log(this.n.substring(this.x, this.y))
+            switch (e.inputType) {
                 case "insertFromPaste":
                 case "insertText":
-                    this.t = {content: this.n.substring(this.x, this.y), type: "add", p1: this.x, p2: this.y} 
+                    this.t = { content: this.n.substring(this.x, this.y), type: "add", p1: this.x, p2: this.y }
                     break;
                 case "deleteByCut":
                 case "deleteContentBackward":
-                    this.x = this.y+(this.o.length-this.n.length);
-                    this.t = {content: this.o.substring(this.y, this.x), type: "sub", p1: this.y, p2: this.x} 
+                    this.x = this.y + (this.o.length - this.n.length);
+                    this.t = { content: this.o.substring(this.y, this.x), type: "sub", p1: this.y, p2: this.x }
                     break;
             }
             this.hist.append(this.t);
@@ -55,16 +56,16 @@ export default class LiveBox extends LitElement {
         });
         this.renderRoot.querySelector("#steeringwheel").addEventListener("input", (v) => {
             let i = parseFloat(v.target.value)
-            let dir = (this.lastIndex < i? "fwd" : "bck" )
-            for(let p = this.lastIndex; p != i;p = p + (dir == "bck" ? -1 : 1)){
+            let dir = (this.lastIndex < i ? "fwd" : "bck")
+            for (let p = this.lastIndex; p != i; p = p + (dir == "bck" ? -1 : 1)) {
                 let entry = this.histArray[p + (dir == "bck" ? 0 : 1)]
-                let ttype = (((entry.type == "add" && dir == "fwd")||(entry.type == "sub" && dir == "bck")) ? "add" : "") + (((entry.type == "sub" && dir == "fwd")||(entry.type == "add" && dir == "bck")) ? "sub" : "") 
+                let ttype = (((entry.type == "add" && dir == "fwd") || (entry.type == "sub" && dir == "bck")) ? "add" : "") + (((entry.type == "sub" && dir == "fwd") || (entry.type == "add" && dir == "bck")) ? "sub" : "")
                 this.value = this.value.slice(0, entry.p1) + (ttype == "add" ? entry.content : "") + this.value.slice((ttype == "sub" ? entry.p2 : null) || entry.p1);
             }
             this.lastIndex = i;
         })
     }
-    static get styles(){
+    static get styles() {
         return css`
         @font-face {
             font-family: "Product-Sans";

@@ -5,17 +5,19 @@ export class LinkedList {
         this.end = undefined;
         this.size = 0;
     }
+    getValue(index) {
+        return this.get(index).data;
+    }
     get(index) {
-        let pointer = (index <= this.size/2 ? this.start : this.end);
-        let currentValue = (index <= this.size/2 ? this.start.data : this.end.data);
-        for(var i = (index <= this.size/2 ? 0 : this.size-1); i != index; i = i + (index <= this.size/2 ? 1 : -1)){
-            pointer = pointer.heads.get((index <= this.size/2 ? 'next' : 'prev'));
+        let pointer = (index <= this.size / 2 ? this.start : this.end);
+        let currentValue = (index <= this.size / 2 ? this.start.data : this.end.data);
+        for (var i = (index <= this.size / 2 ? 0 : this.size - 1); i != index; i = i + (index <= this.size / 2 ? 1 : -1)) {
+            pointer = pointer.heads.get((index <= this.size / 2 ? 'next' : 'prev'));
             currentValue = pointer.data;
         }
-        return currentValue;
+        return pointer;
     }
     traverse() {
-        //throw new Error("Method not implemented.");
         const array = new Array();
         if (this.size == 0) {
             return array;
@@ -27,7 +29,6 @@ export class LinkedList {
         return addToArray(this.start);
     }
     precede(data) {
-        //throw new Error("Method not implemented.");
         let cell = new Cell(data);
         if (this.size == 0 || !this.start) {
             this.end = cell;
@@ -44,7 +45,6 @@ export class LinkedList {
         return cell;
     }
     append(data) {
-        //throw new Error("Method not implemented.");
         let cell = new Cell(data);
         if (this.size == 0 || !this.end) {
             this.start = cell;
@@ -60,13 +60,37 @@ export class LinkedList {
         this.size++;
         return cell;
     }
-    /*insert(data: T, pos: number): Cell<T> {
-        throw new Error("Method not implemented.");
-        if(pos > this.size){
+    insert(data, pos) {
+        if (pos > this.size || pos < 0) {
             throw new Error("Index out of bounds");
+        } else {
+            switch (pos) {
+                case 0:
+                    this.precede(data);
+                    break;
+                case this.size:
+                    this.append(data);
+                    break;
+                default:
+                    let add = new Cell(data);
+                    let next = this.get(pos);
+                    let prev = this.get(pos - 1)
+                    add.heads.set('next', next);
+                    add.heads.set('prev', prev);
+                    next.heads.set('prev', add);
+                    prev.heads.set('next', add);
+                    this.size++
+                    break;
+            }
         }
-    }*/
+    }
     remove(cell) {
+        if(this.start == cell){
+            this.start = undefined;
+        }
+        if(this.end == cell){
+            this.end = undefined;
+        }
         let n = cell.heads.get('next');
         let p = cell.heads.get('prev');
         if (p != undefined) {
@@ -77,8 +101,9 @@ export class LinkedList {
         }
         cell.heads.set('prev', undefined);
         cell.heads.set('next', undefined);
+        this.size--;
     }
-    getSize(){
+    getSize() {
         return this.size;
     }
 }
