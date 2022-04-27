@@ -84,12 +84,22 @@ export class LinkedList {
             }
         }
     }
+    replace(pos, data){
+        this.remove(this.get(pos));
+        this.insert(data, pos);
+    }
+    trim(pos){
+        for(let i = this.size - 1; i >= pos; i--){
+            console.log(i)
+            this.remove(this.get(i));
+        }
+    }
     remove(cell) {
         if(this.start == cell){
-            this.start = undefined;
+            this.start = this.start.heads.get("next");
         }
         if(this.end == cell){
-            this.end = undefined;
+            this.end = this.end.heads.get("prev");
         }
         let n = cell.heads.get('next');
         let p = cell.heads.get('prev');

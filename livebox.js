@@ -45,6 +45,8 @@ export default class LiveBox extends LitElement {
                     this.x = this.y + (this.o.length - this.n.length);
                     this.t = { content: this.o.substring(this.y, this.x), type: "sub", p1: this.y, p2: this.x }
                     break;
+            } if (parseFloat(this.wheel.value) + 1 < this.hist.size){
+                this.hist.trim(parseFloat(this.wheel.value) + 1);
             }
             this.hist.append(this.t);
             this.histArray = this.hist.traverse();
